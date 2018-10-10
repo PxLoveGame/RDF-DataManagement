@@ -14,7 +14,7 @@ import org.openrdf.rio.helpers.RDFHandlerBase;
 
 public final class RDFRawParser {
 
-	private static final String PATH_TO_RDF_FILE = "../../res/dataset/100K.rdf";
+	private static final String PATH_TO_RDF_FILE = "./res/dataset/100K.rdf";
 
 	private static class RDFListener extends RDFHandlerBase {
 
