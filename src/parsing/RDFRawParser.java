@@ -6,28 +6,17 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.openrdf.model.Statement;
-import org.openrdf.rio.*;
+import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
+import org.openrdf.rio.Rio;
 import org.openrdf.rio.helpers.RDFHandlerBase;
-
-import static org.openrdf.rio.Rio.*;
 
 public final class RDFRawParser {
 
-	private static final String PATH_TO_RDF_FILE = "./res/dataset/100K.rdf";
+	private static final String PATH_TO_RDF_FILE = "./res/dataset/100K.rdfxml";
 
 	private static class RDFListener extends RDFHandlerBase {
-
-		@Override
-		public void startRDF() throws RDFHandlerException {
-			System.out.println("start");
-			super.startRDF();
-		}
-
-		@Override
-		public void endRDF() throws RDFHandlerException {
-			System.out.println("end");
-			super.endRDF();
-		}
 
 		@Override
 		public void handleStatement(Statement st) {
@@ -41,22 +30,18 @@ public final class RDFRawParser {
 
 		Reader reader = new FileReader(PATH_TO_RDF_FILE);
 
-		RDFParser rdfParser = createParser(RDFFormat.RDFXML);
+		org.openrdf.rio.RDFParser rdfParser = Rio
+				.createParser(RDFFormat.RDFXML);
 		rdfParser.setRDFHandler(new RDFListener());
-
 		try {
-			System.out.println("je passe par ici");
 			rdfParser.parse(reader, "");
-
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+
 		}
 
 		try {
-			System.out.println("je passe par ici");
 			reader.close();
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
 		}
 
 	}
