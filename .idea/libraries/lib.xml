@@ -2,7 +2,6 @@
   <library name="lib">
     <CLASSES>
       <root url="file://$PROJECT_DIR$/lib" />
-      <root url="jar://$PROJECT_DIR$/lib/rio-1.0.10.jar!/org" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
