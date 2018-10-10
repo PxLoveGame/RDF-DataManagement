@@ -14,6 +14,8 @@ import org.openrdf.rio.helpers.RDFHandlerBase;
 
 public final class RDFRawParser {
 
+	private static final String PATH_TO_RDF_FILE = "../../res/dataset/100K.rdf";
+
 	private static class RDFListener extends RDFHandlerBase {
 
 		@Override
@@ -26,12 +28,12 @@ public final class RDFRawParser {
 
 	public static void main(String args[]) throws FileNotFoundException {
 
-		Reader reader = new FileReader(
-				"/chemin/vers/le/fichier/rdf/University0_0.owl");
+		Reader reader = new FileReader(PATH_TO_RDF_FILE);
 
 		org.openrdf.rio.RDFParser rdfParser = Rio
 				.createParser(RDFFormat.RDFXML);
 		rdfParser.setRDFHandler(new RDFListener());
+
 		try {
 			rdfParser.parse(reader, "");
 		} catch (Exception e) {
