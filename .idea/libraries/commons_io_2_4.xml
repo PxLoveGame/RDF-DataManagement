@@ -12,8 +12,6 @@
       <root url="jar://$PROJECT_DIR$/lib/slf4j-simple-1.7.25.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.ideaLibSources/sesame-model-2.7.11-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

@@ -7,14 +7,10 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.jndi.toolkit.url.Uri;
-import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.Rio;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 
