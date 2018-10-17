@@ -1,8 +1,12 @@
 package parsing;
 
 import java.io.*;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 
+import model.Dictionary;
+import model.Index;
 import org.openrdf.model.Statement;
 
 import org.openrdf.rio.RDFFormat;
@@ -12,9 +16,10 @@ import org.openrdf.rio.helpers.RDFHandlerBase;
 public final class RDFRawParser {
 
 	private static final String PATH_TO_RDF_FILE = "./res/dataset/100K.rdfxml";
-    private  static Dictionary dico = new Dictionary();
-    private static StringBuilder ops = new StringBuilder();
-    private static StringBuilder pos = new StringBuilder();
+
+	private static Dictionary dico = new Dictionary();
+    private static Index index = new Index();
+
 
 
 	private static class RDFListener extends RDFHandlerBase {
@@ -29,8 +34,6 @@ public final class RDFRawParser {
             int predicateID = dico.addToDicos(st.getPredicate().toString());
             int objectID = dico.addToDicos(st.getObject().toString());
 
-            ops.append(objectID+ ","+ predicateID +","+ subjectID).append('\n');
-            pos.append(predicateID  + ","+ objectID +","+ subjectID).append('\n');
 
 		}
 	};
@@ -56,21 +59,21 @@ public final class RDFRawParser {
         }
     }
 
-    public static void createIndex() throws FileNotFoundException, UnsupportedEncodingException {
-        PrintWriter writerPOS = new PrintWriter("out/POS.txt", "UTF-8");
-        writerPOS.print(pos);
-        writerPOS.close();
-
-        PrintWriter writerOPS = new PrintWriter("out/OPS.txt", "UTF-8");
-        writerOPS.println(ops);
-        writerOPS.close();
-
-    }
+//    public static void createIndex() throws FileNotFoundException, UnsupportedEncodingException {
+//        PrintWriter writerPOS = new PrintWriter("out/POS.txt", "UTF-8");
+//        writerPOS.print(pos);
+//        writerPOS.close();
+//
+//        PrintWriter writerOPS = new PrintWriter("out/OPS.txt", "UTF-8");
+//        writerOPS.println(ops);
+//        writerOPS.close();
+//
+//    }
 
 	public static void main(String args[]) throws FileNotFoundException, UnsupportedEncodingException {
 
         parse();
-        createIndex();
+//        createIndex();
 
 	}
 

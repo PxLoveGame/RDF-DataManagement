@@ -1,9 +1,6 @@
-package parsing;
+package model;
 
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -13,7 +10,7 @@ public class Dictionary {
     private Map<Integer, String> dico;
     private Map<String, Integer> dicoReverse;
 
-    Dictionary(){
+    public Dictionary(){
         this.dico = new TreeMap<Integer, String>();
         this.dicoReverse = new TreeMap<String, Integer>();
     }
