@@ -17,9 +17,7 @@ import org.openrdf.rio.helpers.RDFHandlerBase;
 public final class RDFRawParser {
 
 	private static final String PATH_TO_RDF_FILE = "./res/dataset/100K.rdfxml";
-	private static int  cptID = 0;
-	private static Map<Integer, Value> dicoValues = new HashMap<Integer, Value>();
-	private static Map<Integer, URI> dicoPredicates = new HashMap<Integer, URI>();
+    private  static Dictionary dico = new Dictionary();
 
 
 	private static class RDFListener extends RDFHandlerBase {
@@ -31,12 +29,10 @@ public final class RDFRawParser {
 
 
             // ToDo: Voir avec le prof si il n'est pas plus judicieux de faire une seule HashMap <Integer, String>...
-			cptID++;
-			dicoValues.put(cptID, st.getSubject());
-			cptID++;
-            dicoPredicates.put(cptID,st.getPredicate());
-			cptID++;
-            dicoValues.put(cptID,st.getObject());
+
+            dico.addToDicos(st.getSubject().toString());
+            dico.addToDicos(st.getPredicate().toString());
+            dico.addToDicos(st.getObject().toString());
 
 		}
 	};
@@ -51,12 +47,13 @@ public final class RDFRawParser {
         try {
             rdfParser.parse(reader, "");
         } catch (Exception e) {
-
+            System.out.println(e.toString());
         }
 
         try {
             reader.close();
         } catch (IOException e) {
+            System.out.println(e.toString());
         }
     }
 
@@ -64,12 +61,8 @@ public final class RDFRawParser {
 
         parse();
 
-        System.out.println("Nombre de valeurs (sujets ou objets) : " + dicoValues.keySet().size());
-        System.out.println("exemple : " + dicoValues.get(1));
-        System.out.println("exemple : " + dicoValues.get(3));
-        System.out.println("Nombre de relations : " + dicoPredicates.keySet().size());
-        System.out.println("exemple : " + dicoPredicates.get(2));
-        System.out.println("exemple : " + dicoPredicates.get(5));
+        System.out.println(dico.getDico());
+
 	}
 
 }
