@@ -20,21 +20,16 @@ public class Index {
 
     private void addToPOS(int sId, int pId, int oId){
 
-        TreeSet<Integer> s = pos.get(pId).get(oId);
-        TreeMap<Integer, TreeSet<Integer>> os = pos.get(pId);
+        TreeSet<Integer> s = new TreeSet<>();
+        TreeMap<Integer, TreeSet<Integer>> os = new TreeMap<>();
 
-        // Si P n'existe pas, crée un nouveau tuple dans POS
-        if(!this.pos.containsKey(pId)){
+        // Si P existe, recupérer os et s déjà existant.
+        if(this.pos.containsKey(pId)){
+            os = pos.get(pId);
 
-            s = new TreeSet<>();
-            os = new TreeMap<>();
-        }
-        // Sinon ajouter OS dans POS déja existant
-        else {
-            // Si O n'existe pas, crée un nouveau tuple dans OS
-                if(!os.containsKey(oId)){
-                    s = new TreeSet<>();
-                }
+            if(os.containsKey(oId)){
+                s = os.get(oId);
+            }
         }
 
         s.add(sId);
@@ -48,17 +43,16 @@ public class Index {
         TreeSet<Integer> s = ops.get(oId).get(pId);
         TreeMap<Integer, TreeSet<Integer>> ps = ops.get(oId);
 
-        // Si P n'existe pas, crée un nouveau tuple dans POS
-        if(!this.ops.containsKey(oId)){
-            s = new TreeSet<>();
-            ps = new TreeMap<>();
-        }
-        // Sinon ajouter OS dans POS déja existant
-        else {
-            // Si O n'existe pas, crée un nouveau tuple dans OS
-            if(!ps.containsKey(pId)){
-                s = new TreeSet<>();
+        // Si P existe, récupérer ps et s déjà existant
+        if(this.ops.containsKey(oId)){
+
+            ps = ops.get(oId);
+
+            if(ps.containsKey(pId)){
+                s = ps.get(pId);
             }
+
+
         }
 
         s.add(sId);
