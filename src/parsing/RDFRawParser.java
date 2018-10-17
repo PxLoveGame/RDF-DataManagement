@@ -34,8 +34,12 @@ public final class RDFRawParser {
             int predicateID = dico.addToDicos(st.getPredicate().toString());
             int objectID = dico.addToDicos(st.getObject().toString());
 
+            index.addToIndex(subjectID,predicateID,objectID);
 
-		}
+            System.out.print(index.getPos().get(predicateID).toString());
+            System.out.println(index.getPos().get(predicateID).get(objectID).toString());
+
+        }
 	};
 
 
