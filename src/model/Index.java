@@ -20,8 +20,8 @@ public class Index {
 
     private void addToPOS(int sId, int pId, int oId){
 
-        TreeSet<Integer> s = new TreeSet<>();
-        TreeMap<Integer, TreeSet<Integer>> os = new TreeMap<>();
+        TreeSet<Integer> s = pos.get(pId).get(oId);
+        TreeMap<Integer, TreeSet<Integer>> os = pos.get(pId);
 
         // Si P n'existe pas, crée un nouveau tuple dans POS
         if(!this.pos.containsKey(pId)){
@@ -45,8 +45,8 @@ public class Index {
 
     private void addToOPS(int sId, int pId, int oId){
 
-        TreeSet<Integer> s = new TreeSet<>();
-        TreeMap<Integer, TreeSet<Integer>> ps = new TreeMap<>();
+        TreeSet<Integer> s = ops.get(oId).get(pId);
+        TreeMap<Integer, TreeSet<Integer>> ps = ops.get(oId);
 
         // Si P n'existe pas, crée un nouveau tuple dans POS
         if(!this.ops.containsKey(oId)){
