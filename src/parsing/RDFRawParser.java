@@ -1,15 +1,10 @@
 package parsing;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+
 
 import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
+
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
 import org.openrdf.rio.helpers.RDFHandlerBase;
@@ -18,6 +13,8 @@ public final class RDFRawParser {
 
 	private static final String PATH_TO_RDF_FILE = "./res/dataset/100K.rdfxml";
     private  static Dictionary dico = new Dictionary();
+    private static StringBuilder ops = new StringBuilder();
+    private static StringBuilder pos = new StringBuilder();
 
 
 	private static class RDFListener extends RDFHandlerBase {
@@ -28,14 +25,16 @@ public final class RDFRawParser {
 //					+ st.getObject());
 
 
-            // ToDo: Voir avec le prof si il n'est pas plus judicieux de faire une seule HashMap <Integer, String>...
+            int subjectID = dico.addToDicos(st.getSubject().toString());
+            int predicateID = dico.addToDicos(st.getPredicate().toString());
+            int objectID = dico.addToDicos(st.getObject().toString());
 
-            dico.addToDicos(st.getSubject().toString());
-            dico.addToDicos(st.getPredicate().toString());
-            dico.addToDicos(st.getObject().toString());
+            ops.append(objectID+ ","+ predicateID +","+ subjectID).append('\n');
+            pos.append(predicateID  + ","+ objectID +","+ subjectID).append('\n');
 
 		}
 	};
+
 
 	public static void parse() throws  FileNotFoundException {
 
@@ -57,11 +56,21 @@ public final class RDFRawParser {
         }
     }
 
-	public static void main(String args[]) throws FileNotFoundException {
+    public static void createIndex() throws FileNotFoundException, UnsupportedEncodingException {
+        PrintWriter writerPOS = new PrintWriter("out/POS.txt", "UTF-8");
+        writerPOS.print(pos);
+        writerPOS.close();
+
+        PrintWriter writerOPS = new PrintWriter("out/OPS.txt", "UTF-8");
+        writerOPS.println(ops);
+        writerOPS.close();
+
+    }
+
+	public static void main(String args[]) throws FileNotFoundException, UnsupportedEncodingException {
 
         parse();
-
-        System.out.println(dico.getDico());
+        createIndex();
 
 	}
 

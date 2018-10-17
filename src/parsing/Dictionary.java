@@ -19,7 +19,7 @@ public class Dictionary {
     }
 
 
-    public void addToDicos(String v){
+    public int addToDicos(String v){
         cptID++;
         try{
             this.dico.put(cptID,v);
@@ -27,7 +27,7 @@ public class Dictionary {
         }catch(Exception e) {
             System.out.println(e);
         }
-
+        return cptID;
     }
 
     public Map<Integer, String> getDico() {
