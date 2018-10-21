@@ -40,19 +40,21 @@ public class Index {
 
     private void addToOPS(int sId, int pId, int oId){
 
-        TreeSet<Integer> s = ops.get(oId).get(pId);
+        TreeSet<Integer> s;
+
+        ops.computeIfAbsent(oId, k -> new TreeMap<>());
+        TreeMap<Integer, TreeSet<Integer>> o = ops.get(oId);
+
+        o.computeIfAbsent(pId, k -> new TreeSet<>());
+        s = o.get(pId);
         TreeMap<Integer, TreeSet<Integer>> ps = ops.get(oId);
 
         // Si P existe, récupérer ps et s déjà existant
         if(this.ops.containsKey(oId)){
-
             ps = ops.get(oId);
-
             if(ps.containsKey(pId)){
                 s = ps.get(pId);
             }
-
-
         }
 
         s.add(sId);

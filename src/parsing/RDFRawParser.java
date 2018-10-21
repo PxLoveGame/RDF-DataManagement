@@ -1,21 +1,17 @@
 package parsing;
 
-import java.io.*;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-
 import model.Dictionary;
 import model.Index;
 import org.openrdf.model.Statement;
-
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 
+import java.io.*;
+
 public final class RDFRawParser {
 
-	private static final String PATH_TO_RDF_FILE = "./res/dataset/100K.rdfxml";
+//	private static final String PATH_TO_RDF_FILE = "./res/dataset/100K.rdfxml";
 
 	private static Dictionary dico = new Dictionary();
     private static Index index = new Index();
@@ -35,17 +31,18 @@ public final class RDFRawParser {
             int objectID = dico.addToDicos(st.getObject().toString());
 
             index.addToIndex(subjectID,predicateID,objectID);
+//            System.out.println("Adding index " + subjectID);
 
             System.out.print(index.getPos().get(predicateID).toString());
             System.out.println(index.getPos().get(predicateID).get(objectID).toString());
 
         }
-	};
+	}
 
 
-	public static void parse() throws  FileNotFoundException {
+	public static void parse(File dataFile) throws  FileNotFoundException {
 
-        Reader reader = new FileReader(PATH_TO_RDF_FILE);
+        Reader reader = new FileReader(dataFile);
 
         org.openrdf.rio.RDFParser rdfParser = Rio
                 .createParser(RDFFormat.RDFXML);
@@ -53,32 +50,14 @@ public final class RDFRawParser {
         try {
             rdfParser.parse(reader, "");
         } catch (Exception e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
 
         try {
             reader.close();
         } catch (IOException e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
-
-//    public static void createIndex() throws FileNotFoundException, UnsupportedEncodingException {
-//        PrintWriter writerPOS = new PrintWriter("out/POS.txt", "UTF-8");
-//        writerPOS.print(pos);
-//        writerPOS.close();
-//
-//        PrintWriter writerOPS = new PrintWriter("out/OPS.txt", "UTF-8");
-//        writerOPS.println(ops);
-//        writerOPS.close();
-//
-//    }
-
-	public static void main(String args[]) throws FileNotFoundException, UnsupportedEncodingException {
-
-        parse();
-//        createIndex();
-
-	}
 
 }

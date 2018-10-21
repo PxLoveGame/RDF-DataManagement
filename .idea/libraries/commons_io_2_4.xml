@@ -12,6 +12,8 @@
       <root url="jar://$PROJECT_DIR$/lib/slf4j-simple-1.7.25.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ideaLibSources/sesame-rio-api-2.7.11-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

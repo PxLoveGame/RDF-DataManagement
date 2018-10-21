@@ -1,11 +1,19 @@
 import model.Query;
+import parsing.RDFRawParser;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main {
+
+    private final static Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     public static Boolean WORKLOAD_TIME = false;
     public static Boolean VERBOSE = false;
@@ -13,7 +21,7 @@ public class Main {
     public static Boolean EXPORT_STATS = false;
     public static File OUTPUT_DIRECTORY;
     public static File QUERIES_FILE;
-    public static File DATA_SOURCES_FILE;
+    public static File DATA_FILE;
     public static ArrayList<Query> QUERIES = new ArrayList<>();
 
 
@@ -24,81 +32,87 @@ public class Main {
          -queries "/chemin/vers/requetes" -data "/chemin/vers/donnees" -output "/chemin/vers/dossier/sortie" -verbose -export_results -export_stats -workload_time
          -queries "res/queries/Q_1_likes.queryset" -data "res/dataset/100K.rdfxml" -output "out" -verbose -export_results -export_stats -workload_time
          */
+        LOGGER.setLevel(Level.FINE);
+        LOGGER.addHandler(new ConsoleHandler());
+        LOGGER.addHandler(new FileHandler());
 
-        HashMap<String, String> params = readParams(args);
-        if ( loadParams(params) ){
-
-            if ( checkDirectories() ){
-                // todo :: start parsing
-                System.out.println("Start parsing...");
-                System.out.println("Input data file : " + DATA_SOURCES_FILE.getPath());
-                System.out.println("Input queries file : " + QUERIES_FILE.getPath());
-                System.out.println("Output directory: " + OUTPUT_DIRECTORY.getPath());
-
-                ArrayList<Query> queries;
-
-                queries = Query.parseQueries(QUERIES_FILE);
-
-                System.out.println(queries.size() + " queries found");
+        readParams(args); // loads and checks the arguments
 
 
+        System.out.println("Input data file : " + DATA_FILE.getPath());
+        System.out.println("Input queries file : " + QUERIES_FILE.getPath());
+        System.out.println("Output directory: " + OUTPUT_DIRECTORY.getPath());
 
+        ArrayList<Query> queries = Query.parseQueries(QUERIES_FILE);
+        System.out.println(queries.size() + " queries found");
 
-
-
-
-            } else {
-                System.err.println("an input file doesn't exist");
-            }
-
-
-        }else {
-            System.err.println("Parameters are missing");
-        }
+        RDFRawParser.parse(DATA_FILE);
 
     }
 
     /**
-     * Cleans and/or creates the output directories
-     * @return true if the input files exist, false if a given file is missing
+     * Checks if input files exists
+     * Creates the output directories
      */
-    private static boolean checkDirectories() {
-        // todo : create output dir
+    private static void checkDirectories() throws IOException {
 
-        return (QUERIES_FILE.exists() && DATA_SOURCES_FILE.exists());
-    }
-
-    private static boolean loadParams(HashMap<String, String> params) {
-
-        HashMap<String, Boolean> bools = new HashMap<>();
-        bools.put("verbose", VERBOSE);
-        bools.put("export_results", EXPORT_RESULTS);
-        bools.put("export_stats", EXPORT_STATS);
-
-        for( String key : params.keySet() ) {
-            if (key.equals("queries")){
-                QUERIES_FILE = new File( params.get(key) );
-            }else if (key.equals("data")){
-                DATA_SOURCES_FILE = new File( params.get(key) );
-            }else if (key.equals("output")){
-                OUTPUT_DIRECTORY = new File( params.get(key) );
-            }else if (key.equals("verbose")){
-                VERBOSE = Boolean.valueOf(params.get(key));
-            }else if (key.equals("export_results")){
-                EXPORT_RESULTS = Boolean.valueOf(params.get(key));
-            }else if (key.equals("export_stats")){
-                EXPORT_STATS = Boolean.valueOf(params.get(key));
-            }else if (key.equals("workload_time")){
-                WORKLOAD_TIME = Boolean.valueOf(params.get(key));
+        if(!OUTPUT_DIRECTORY.exists()){
+            System.out.println("Creating output directory " + OUTPUT_DIRECTORY);
+            if (!OUTPUT_DIRECTORY.mkdirs()){
+                throw new IOException("Couldn't create output directory");
             }
         }
 
-        return ( // return true only if all mandatory parameters are set
-                OUTPUT_DIRECTORY != null && DATA_SOURCES_FILE != null && QUERIES_FILE != null
-                );
+        if (!QUERIES_FILE.exists()){
+            throw new FileNotFoundException("Input file is missing : " + QUERIES_FILE);
+        }else if( !DATA_FILE.exists() ){
+            throw new FileNotFoundException("Input file is missing : " + DATA_FILE);
+        }
     }
 
-    private static HashMap<String, String> readParams(String[] args) {
+    private static void loadParams(HashMap<String, String> params) {
+
+        for( String key : params.keySet() ) {
+            switch (key) {
+                case "queries":
+                    QUERIES_FILE = new File(params.get(key));
+                    break;
+                case "data":
+                    DATA_FILE = new File(params.get(key));
+                    break;
+                case "output":
+                    OUTPUT_DIRECTORY = new File(params.get(key));
+                    break;
+                case "verbose":
+                    VERBOSE = Boolean.valueOf(params.get(key));
+                    break;
+                case "export_results":
+                    EXPORT_RESULTS = Boolean.valueOf(params.get(key));
+                    break;
+                case "export_stats":
+                    EXPORT_STATS = Boolean.valueOf(params.get(key));
+                    break;
+                case "workload_time":
+                    WORKLOAD_TIME = Boolean.valueOf(params.get(key));
+                    break;
+            }
+        }
+
+        if (OUTPUT_DIRECTORY == null){
+            throw new IllegalArgumentException("Missing argument : " + "output");
+        }else if (QUERIES_FILE == null){
+            throw new IllegalArgumentException("Missing argument : " + "queries");
+        } if (DATA_FILE == null){
+            throw new IllegalArgumentException("Missing argument : " + "data");
+        }
+
+        if (!VERBOSE ){
+            LOGGER.setLevel(Level.SEVERE);
+        }
+
+    }
+
+    private static void readParams(String[] args) throws IOException {
         HashMap<String, String> params = new HashMap<>();
 
 
@@ -115,7 +129,9 @@ public class Main {
                 }
             }
         }
-        return params;
+
+        loadParams(params); // Extrait les arguments du programme
+        checkDirectories(); // Vérifie l'existance des fichiers d'entrée, créé le dossier de sortie
 
     }
 
