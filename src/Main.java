@@ -1,6 +1,7 @@
 import model.Query;
-
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,25 +17,58 @@ public class Main {
     public static ArrayList<Query> QUERIES = new ArrayList<>();
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
 
         /**
-         * java -jar rdfstar
-         * -queries "/chemin/vers/requetes"
-         * -data "/chemin/vers/donnees"
-         * -output "/chemin/vers/dossier/sortie"
-         * -verbose
-         * -export_results
-         * -export_stats
-         * -workload_time
+         java -jar rdfstar
+         -queries "/chemin/vers/requetes" -data "/chemin/vers/donnees" -output "/chemin/vers/dossier/sortie" -verbose -export_results -export_stats -workload_time
+         -queries "res/queries/Q_1_likes.queryset" -data "res/dataset/100K.rdfxml" -output "out" -verbose -export_results -export_stats -workload_time
          */
 
         HashMap<String, String> params = readParams(args);
-        loadParams(params);
+        if ( loadParams(params) ){
+
+            if ( checkDirectories() ){
+                // todo :: start parsing
+                System.out.println("Start parsing...");
+                System.out.println("Input data file : " + DATA_SOURCES_FILE.getPath());
+                System.out.println("Input queries file : " + QUERIES_FILE.getPath());
+                System.out.println("Output directory: " + OUTPUT_DIRECTORY.getPath());
+
+                ArrayList<Query> queries;
+
+                queries = Query.parseQueries(QUERIES_FILE);
+
+                System.out.println(queries.size() + " queries found");
+
+
+
+
+
+
+
+            } else {
+                System.err.println("an input file doesn't exist");
+            }
+
+
+        }else {
+            System.err.println("Parameters are missing");
+        }
 
     }
 
-    private static void loadParams(HashMap<String, String> params) {
+    /**
+     * Cleans and/or creates the output directories
+     * @return true if the input files exist, false if a given file is missing
+     */
+    private static boolean checkDirectories() {
+        // todo : create output dir
+
+        return (QUERIES_FILE.exists() && DATA_SOURCES_FILE.exists());
+    }
+
+    private static boolean loadParams(HashMap<String, String> params) {
 
         HashMap<String, Boolean> bools = new HashMap<>();
         bools.put("verbose", VERBOSE);
@@ -59,6 +93,9 @@ public class Main {
             }
         }
 
+        return ( // return true only if all mandatory parameters are set
+                OUTPUT_DIRECTORY != null && DATA_SOURCES_FILE != null && QUERIES_FILE != null
+                );
     }
 
     private static HashMap<String, String> readParams(String[] args) {
