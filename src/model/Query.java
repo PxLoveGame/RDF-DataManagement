@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -19,13 +20,36 @@ public class Query {
         S = s;
     }
 
+    public static void bindData(ArrayList<Query> queries, Dictionary dico, Index index) {
+        Map<String, Integer> dicoReverse = dico.getDicoReverse();
+        Integer sId, oId, pId;
+
+
+        for (Query q : queries){
+            for (Triplet t : q.triplets){
+                sId = dicoReverse.get(t.s);
+                pId = dicoReverse.get(t.p);
+                oId = dicoReverse.get(t.o);
+
+                if (sId == null || pId == null || oId == null){
+                    throw new NullPointerException("Le triplet " + t + " fait mention d'éléments non recensés dans le dictionnaire");
+                } else {
+                    t.bindIndex(sId, pId, oId);
+                }
+
+            }
+
+        }
+
+    }
+
     private void addTriplet(Triplet triplet) {
         triplets.add(triplet);
     }
 
     public String toString(){
         StringBuilder res = new StringBuilder();
-        res.append("Matching " + S + " on {\n");
+        res.append("Matching ").append(S).append(" on {\n");
         for (Triplet t : triplets){
             res.append('\t').append(t.toString());
         }
@@ -78,8 +102,9 @@ public class Query {
     static class Triplet {
 
         private String s, p, o;
+        private Integer sId, oId, pId;
 
-        public Triplet(String subject, String property, String object){
+        Triplet(String subject, String property, String object){
             s = subject;
             p = property;
             o = object;
@@ -97,8 +122,31 @@ public class Query {
             return o;
         }
 
+        public Integer oId(){
+            return oId;
+        }
+
+        public Integer pId(){
+            return pId;
+        }
+
+        public Integer sId(){
+            return sId;
+        }
+
+        public void bindIndex(Integer s, Integer p, Integer o){
+            sId = s;
+            oId = o;
+            pId = p;
+        }
+
         public String toString(){
-            return s + " " + p + " " + o;
+            if (sId != null && pId != null && oId != null){
+                return s + "(" + sId + ") " + p + "(" +  pId +") " + o + "(" + oId + ")";
+            }else {
+                return s + " " + p + " " + o;
+            }
+
         }
     }
 }

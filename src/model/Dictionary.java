@@ -11,8 +11,8 @@ public class Dictionary {
     private Map<String, Integer> dicoReverse;
 
     public Dictionary(){
-        this.dico = new TreeMap<Integer, String>();
-        this.dicoReverse = new TreeMap<String, Integer>();
+        this.dico = new TreeMap<>();
+        this.dicoReverse = new TreeMap<>();
     }
 
 

@@ -1,3 +1,5 @@
+import model.Dictionary;
+import model.Index;
 import model.Query;
 import parsing.RDFRawParser;
 
@@ -54,6 +56,13 @@ public class Main {
         RDFRawParser.parse(DATA_FILE);
         dataTimer.stop();
         System.out.println("Input data parsed in " + dataTimer);
+
+        Dictionary dico = RDFRawParser.getDico();
+        Index index = RDFRawParser.getIndex();
+
+        Query.bindData(queries, dico, index);
+
+
 
     }
 
