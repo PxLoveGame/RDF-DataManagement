@@ -27,7 +27,7 @@ public final class StopWatch {
      Start the stopwatch.
      @throws IllegalStateException if the stopwatch is already running.
      */
-    public void start(){
+    void start(){
         if (isRunning) {
             throw new IllegalStateException("Must stop before calling start again.");
         }
@@ -42,7 +42,7 @@ public final class StopWatch {
      Stop the stopwatch.
      @throws IllegalStateException if the stopwatch is not already running.
      */
-    public void stop() {
+    void stop() {
         if (!isRunning) {
             throw new IllegalStateException("Cannot stop if not currently running.");
         }
@@ -79,7 +79,7 @@ public final class StopWatch {
      @throws IllegalStateException if the StopWatch has never been used,
      or if the stopwatch is still running.
      */
-    public long toValue() {
+    private long toValue() {
         validateIsReadable();
         return  stop - start;
     }
@@ -98,9 +98,5 @@ public final class StopWatch {
             String message = "Cannot read a stopwatch which has never been started.";
             throw new IllegalStateException(message);
         }
-    }
-
-    private static void log(String msg) {
-        System.out.println(msg);
     }
 } 
