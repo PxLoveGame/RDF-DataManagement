@@ -43,10 +43,17 @@ public class Main {
         System.out.println("Input queries file : " + QUERIES_FILE.getPath());
         System.out.println("Output directory: " + OUTPUT_DIRECTORY.getPath());
 
+        StopWatch queriesTimer = new StopWatch();
+        queriesTimer.start();
         ArrayList<Query> queries = Query.parseQueries(QUERIES_FILE);
-        System.out.println(queries.size() + " queries found");
+        queriesTimer.stop();
+        System.out.println(queries.size() + " queries found in " + queriesTimer);
 
+        StopWatch dataTimer = new StopWatch();
+        dataTimer.start();
         RDFRawParser.parse(DATA_FILE);
+        dataTimer.stop();
+        System.out.println("Input data parsed in " + dataTimer);
 
     }
 

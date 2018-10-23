@@ -33,8 +33,8 @@ public final class RDFRawParser {
             index.addToIndex(subjectID,predicateID,objectID);
 //            System.out.println("Adding index " + subjectID);
 
-            System.out.print(index.getPos().get(predicateID).toString());
-            System.out.println(index.getPos().get(predicateID).get(objectID).toString());
+//            System.out.print(index.getPos().get(predicateID).toString());
+//            System.out.println(index.getPos().get(predicateID).get(objectID).toString());
 
         }
 	}
