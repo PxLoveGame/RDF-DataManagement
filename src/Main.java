@@ -149,7 +149,7 @@ public class Main {
             }
         }
 
-        if (OUTPUT_DIRECTORY == null){
+        if (OUTPUT_DIRECTORY == null && (WORKLOAD_TIME || EXPORT_RESULTS || EXPORT_STATS)){
             throw new IllegalArgumentException("Missing argument : " + "output");
         }else if (QUERIES_FILE == null){
             throw new IllegalArgumentException("Missing argument : " + "queries");
@@ -177,7 +177,10 @@ public class Main {
         }
 
         loadParams(params); // Extrait les arguments du programme
-        checkDirectories(); // Vérifie l'existance des fichiers d'entrée, créé le dossier de sortie
+        if(OUTPUT_DIRECTORY != null){
+            checkDirectories(); // Vérifie l'existance des fichiers d'entrée, créé le dossier de sortie
+        }
+
 
     }
 
