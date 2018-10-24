@@ -32,8 +32,10 @@ public class Main {
         /**
          java -jar rdfstar
          -queries "/chemin/vers/requetes" -data "/chemin/vers/donnees" -output "/chemin/vers/dossier/sortie" -verbose -export_results -export_stats -workload_time
-         -queries "res/queries/Q_1_likes.queryset" -data "res/dataset/100K.rdfxml" -output "out" -verbose -export_results -export_stats -workload_time
+         -queries "res/queries/Q_1_likes.queryset" -data "res/dataset/100K.rdfxml" -output "out/parsed" -verbose -export_results -export_stats -workload_time
          */
+
+
         LOGGER.setLevel(Level.FINE);
         LOGGER.addHandler(new ConsoleHandler());
         LOGGER.addHandler(new FileHandler());

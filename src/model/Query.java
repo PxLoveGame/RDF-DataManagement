@@ -33,6 +33,7 @@ public class Query {
 
                 if (sId == null || pId == null || oId == null){
                     throw new NullPointerException("Le triplet " + t + " fait mention d'éléments non recensés dans le dictionnaire");
+                    // todo : serr && remove query
                 } else {
                     t.bindIndex(sId, pId, oId);
                 }
