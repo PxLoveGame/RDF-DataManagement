@@ -1,11 +1,9 @@
-import model.Dictionary;
-import model.Index;
-import model.Query;
-import model.Solver;
+import model.*;
 import parsing.RDFRawParser;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,6 +69,13 @@ public class Main {
         solveWatch.stop();
 
         System.out.println("Queries processed in " + solveWatch);
+
+        if(EXPORT_STATS){
+            exportStats(queries,dico);
+        }
+        if(EXPORT_RESULTS) {
+            exportResults(queries, dico);
+        }
 
 
 
@@ -159,6 +164,30 @@ public class Main {
         loadParams(params); // Extrait les arguments du programme
         checkDirectories(); // Vérifie l'existance des fichiers d'entrée, créé le dossier de sortie
 
+    }
+
+    private static void exportStats(ArrayList<Query> queries, Dictionary dico) throws IOException {
+        FileWriter stats = new FileWriter(OUTPUT_DIRECTORY.getPath() + "/" + "stats.csv");
+        stats.append("Nom;Correspondances;Selectivité(%)" + "\n");
+        for(Query q : queries){
+            for(Triplet triplet : q.getTriplets()){
+                stats.append(triplet.toString() + ";");
+                stats.append(String.valueOf(triplet.getSelectivity()) + ";");
+
+                float selectivity = ((float) triplet.getSelectivity() / dico.getDico().size()) * 100 ;
+                stats.append(String.valueOf(selectivity) + "\n");
+            }
+        }
+    }
+
+    private static void exportResults(ArrayList<Query> queries, Dictionary dico) throws IOException {
+
+        FileWriter result = new FileWriter(OUTPUT_DIRECTORY.getPath() + "/" + "result.csv");
+        result.append("Request;Result" + "\n");
+
+        for(Query q : queries){
+
+        }
     }
 
 }

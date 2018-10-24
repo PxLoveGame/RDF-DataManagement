@@ -22,7 +22,7 @@ public class Solver {
 
         TreeSet<Integer> matches = new TreeSet<>();
 
-        for (Query.Triplet t : query.getTriplets()){
+        for (Triplet t : query.getTriplets()){
             TreeSet<Integer> subMatches = solveTriplet(t, index);
             System.out.println("SubMatches : " + subMatches);
 
@@ -39,7 +39,7 @@ public class Solver {
 
     }
 
-    private static TreeSet<Integer> solveTriplet(Query.Triplet triplet, Index index) {
+    private static TreeSet<Integer> solveTriplet(Triplet triplet, Index index) {
 
 //        System.out.println("Solving subQuery " + triplet);
 
@@ -50,6 +50,9 @@ public class Solver {
         if (s == null){
             return new TreeSet<>();
         }
+
+        int selectivity = s.size();
+        triplet.setSelectivity(selectivity);
 
         return s;
     }

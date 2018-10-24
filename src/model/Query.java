@@ -30,8 +30,8 @@ public class Query {
         for (Query q : queries){
             for (Triplet t : q.triplets){
 
-                pId = dicoReverse.get(t.p);
-                oId = dicoReverse.get(t.o);
+                pId = dicoReverse.get(t.p());
+                oId = dicoReverse.get(t.o());
 
                 if (pId == null || oId == null){
                     String errMessage = "Le triplet " + t + " fait mention d'éléments non recensés dans le dictionnaire";
@@ -113,54 +113,4 @@ public class Query {
         return triplets;
     }
 
-    static class Triplet {
-
-        private String s, p, o;
-        private Integer sId, oId, pId;
-
-        Triplet(String subject, String property, String object){
-            s = subject;
-            p = property;
-            o = object;
-        }
-
-        public String s(){
-            return s;
-        }
-
-        public String p(){
-            return p;
-        }
-
-        public String o(){
-            return o;
-        }
-
-        public Integer oId(){
-            return oId;
-        }
-
-        public Integer pId(){
-            return pId;
-        }
-
-        public Integer sId(){
-            return sId;
-        }
-
-        public void bindIndex(/*Integer s, */Integer p, Integer o){
-//            sId = s;
-            oId = o;
-            pId = p;
-        }
-
-        public String toString(){
-            if (pId != null && oId != null){
-                return new StringBuilder().append(s).append("(").append(sId).append(") ").append(p).append("(").append(pId).append(") ").append(o).append("(").append(oId).append(")").toString();
-            }else {
-                return new StringBuilder().append(s).append(" ").append(p).append(" ").append(o).toString();
-            }
-
-        }
-    }
 }
