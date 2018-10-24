@@ -13,13 +13,7 @@ public final class RDFRawParser {
 
 //	private static final String PATH_TO_RDF_FILE = "./res/dataset/100K.rdfxml";
 
-    public static Dictionary getDico() {
-        return dico;
-    }
 
-    public static Index getIndex() {
-        return index;
-    }
 
     private static Dictionary dico = new Dictionary();
     private static Index index = new Index();
@@ -66,6 +60,14 @@ public final class RDFRawParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Dictionary getDico() {
+        return dico;
+    }
+
+    public static Index getIndex() {
+        return index;
     }
 
 }

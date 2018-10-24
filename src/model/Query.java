@@ -20,19 +20,26 @@ public class Query {
         S = s;
     }
 
-    public static void bindData(ArrayList<Query> queries, Dictionary dico, Index index) {
+    public static void bindData(ArrayList<Query> queries, Dictionary dico) {
         Map<String, Integer> dicoReverse = dico.getDicoReverse();
         Integer sId, oId, pId;
 
 
+        int i = 0;
         for (Query q : queries){
+            System.err.println("Reading query " + i);
             for (Triplet t : q.triplets){
                 sId = dicoReverse.get(t.s);
                 pId = dicoReverse.get(t.p);
                 oId = dicoReverse.get(t.o);
 
                 if (sId == null || pId == null || oId == null){
-                    throw new NullPointerException("Le triplet " + t + " fait mention d'éléments non recensés dans le dictionnaire");
+                    String errMessage = "Le triplet " + t + " fait mention d'éléments non recensés dans le dictionnaire";
+                    System.err.println("sId : " + sId);
+                    System.err.println("pId : " + pId);
+                    System.err.println("oId : " + oId);
+//                    throw new NullPointerException(errMessage);
+                    System.err.println(errMessage);
                     // todo : serr && remove query
                 } else {
                     t.bindIndex(sId, pId, oId);

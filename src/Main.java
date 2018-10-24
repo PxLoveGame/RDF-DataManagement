@@ -62,7 +62,7 @@ public class Main {
         Dictionary dico = RDFRawParser.getDico();
         Index index = RDFRawParser.getIndex();
 
-        Query.bindData(queries, dico, index);
+        Query.bindData(queries, dico);
 
 
 
