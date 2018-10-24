@@ -23,7 +23,6 @@ public class Main {
     public static File OUTPUT_DIRECTORY;
     public static File QUERIES_FILE;
     public static File DATA_FILE;
-    public static ArrayList<Query> QUERIES = new ArrayList<>();
 
 
     public static void main(String[] args) throws IOException {
@@ -40,41 +39,50 @@ public class Main {
         LOGGER.addHandler(new FileHandler());
 
         readParams(args); // loads and checks the arguments
+        StopWatch totalTimer = new StopWatch("Temps total d'execution");
+        totalTimer.start();
 
 
-        System.out.println("Input data file : " + DATA_FILE.getPath());
-        System.out.println("Input queries file : " + QUERIES_FILE.getPath());
-        System.out.println("Output directory: " + OUTPUT_DIRECTORY.getPath());
+        log("Input data file : " + DATA_FILE.getPath());
+        log("Input queries file : " + QUERIES_FILE.getPath());
+        log("Output directory: " + OUTPUT_DIRECTORY.getPath());
 
-        StopWatch queriesTimer = new StopWatch();
+        StopWatch queriesTimer = new StopWatch("Lecture des requêtes");
         queriesTimer.start();
         ArrayList<Query> queries = Query.parseQueries(QUERIES_FILE);
         queriesTimer.stop();
-        System.out.println(queries.size() + " queries found in " + queriesTimer);
+        log(queries.size() + " queries found in " + queriesTimer);
 
-        StopWatch dataTimer = new StopWatch();
+        StopWatch dataTimer = new StopWatch("Lecture du jeu de données");
         dataTimer.start();
         RDFRawParser.parse(DATA_FILE);
         dataTimer.stop();
-        System.out.println("Input data parsed in " + dataTimer);
+        log("Input data parsed in " + dataTimer);
 
         Dictionary dico = RDFRawParser.getDico();
         Index index = RDFRawParser.getIndex();
 
         Query.bindData(queries, dico);
 
-        StopWatch solveWatch = new StopWatch();
-        solveWatch.start();
+        StopWatch solveTimer = new StopWatch("Traitement des requêtes");
+        solveTimer.start();
         Solver.solveQueries(queries, index);
-        solveWatch.stop();
+        solveTimer.stop();
 
-        System.out.println("Queries processed in " + solveWatch);
+        log("Queries processed in " + solveTimer);
+
+        totalTimer.stop();
+
+        log("Total execution time : " + totalTimer);
 
         if(EXPORT_STATS){
             exportStats(queries,dico);
         }
         if(EXPORT_RESULTS) {
             exportResults(queries, dico);
+        }
+        if (WORKLOAD_TIME){
+            exportWorkloadTime(queriesTimer, dataTimer, solveTimer , totalTimer );
         }
 
 
@@ -88,7 +96,7 @@ public class Main {
     private static void checkDirectories() throws IOException {
 
         if(!OUTPUT_DIRECTORY.exists()){
-            System.out.println("Creating output directory " + OUTPUT_DIRECTORY);
+            log("Creating output directory " + OUTPUT_DIRECTORY);
             if (!OUTPUT_DIRECTORY.mkdirs()){
                 throw new IOException("Couldn't create output directory");
             }
@@ -183,10 +191,32 @@ public class Main {
     private static void exportResults(ArrayList<Query> queries, Dictionary dico) throws IOException {
 
         FileWriter result = new FileWriter(OUTPUT_DIRECTORY.getPath() + "/" + "result.csv");
-        result.append("Request;Result" + "\n");
+        result.append("Request;Results" + "\n");
 
         for(Query q : queries){
+            result.append(q.toString()).append(';');
+            for ( Integer resId : q.getResults() ){
+                result.append( dico.getDico().get(resId) ).append(';');
+            }
+            result.append('\n');
+        }
+    }
 
+    private static void exportWorkloadTime(StopWatch... timers) throws IOException {
+        FileWriter result = new FileWriter(OUTPUT_DIRECTORY.getPath() + "/" + "workload_time.csv");
+
+        result.append("Tâche;Durée" + "\n");
+
+//        for (StopWatch timer : timers){
+//            System.out.println("timer " + timer.getName());
+//            result.append(timer.getName()).append(';').append(timer.toString()).append('\n');
+//        }
+
+    }
+    
+    private static void log(String msg){
+        if (VERBOSE){
+            System.out.println(msg);
         }
     }
 

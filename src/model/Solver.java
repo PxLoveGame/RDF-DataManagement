@@ -10,21 +10,21 @@ public class Solver {
     public static void solveQueries(ArrayList<Query> queries, Index index){
 
         for (Query q : queries){
-            solveQuery(q, index);
+            q.setResults(solveQuery(q, index));
         }
 //        solveQuery(queries.get(0), index);
 
 
     }
 
-    private static void solveQuery(Query query, Index index) {
-        System.out.println("================================\nSolving query \n\t" + query);
+    private static TreeSet<Integer> solveQuery(Query query, Index index) {
+//        System.out.println("================================\nSolving query \n\t" + query);
 
         TreeSet<Integer> matches = new TreeSet<>();
 
         for (Triplet t : query.getTriplets()){
             TreeSet<Integer> subMatches = solveTriplet(t, index);
-            System.out.println("SubMatches : " + subMatches);
+//            System.out.println("SubMatches : " + subMatches);
 
             if (matches.isEmpty()){
                 matches.addAll(subMatches);
@@ -32,10 +32,12 @@ public class Solver {
                 matches.retainAll(subMatches);
             }
 
-            System.out.println("Post filter : " + matches);
+//            System.out.println("Post filter : " + matches);
 
 
         }
+
+        return matches;
 
     }
 

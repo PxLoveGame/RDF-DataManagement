@@ -52,11 +52,11 @@ public class Triplet {
     }
 
     public String toString(){
-        if (pId != null && oId != null){
-            return new StringBuilder().append(s).append("(").append(sId).append(") ").append(p).append("(").append(pId).append(") ").append(o).append("(").append(oId).append(")").toString();
-        }else {
+//        if (pId != null && oId != null){
+//            return new StringBuilder().append(s).append("(").append(sId).append(") ").append(p).append("(").append(pId).append(") ").append(o).append("(").append(oId).append(")").toString();
+//        }else {
             return new StringBuilder().append(s).append(" ").append(p).append(" ").append(o).toString();
-        }
+//        }
 
     }
 }

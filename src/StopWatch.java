@@ -22,6 +22,7 @@ public final class StopWatch {
 
     /** Converts from nanos to millis. */
     private static final BigDecimal MILLION = new BigDecimal("1000000");
+    private String name;
 
     /**
      Start the stopwatch.
@@ -99,4 +100,12 @@ public final class StopWatch {
             throw new IllegalStateException(message);
         }
     }
-} 
+
+    public String getName() {
+        return name;
+    }
+
+    public StopWatch(String n){
+        name = n;
+    }
+}

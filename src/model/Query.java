@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -17,6 +18,7 @@ public class Query {
 //    private final String S;
     private ArrayList<String> variables = new ArrayList<>();
     private ArrayList<Triplet> triplets = new ArrayList<>();
+    private TreeSet<Integer> results = new TreeSet<>();
 
     public Query(String... vars) {
         variables.addAll(Arrays.asList(vars));
@@ -53,14 +55,15 @@ public class Query {
     }
 
     public String toString(){
+
         StringBuilder res = new StringBuilder();
-        res.append("Matching ");
+        res.append("SELECT ");
         for (String v : variables){
             res.append(v).append(' ');
         }
-        res.append(" on {\n");
+        res.append("WHERE {\n");
         for (Triplet t : triplets){
-            res.append('\t').append(t.toString());
+            res.append('\t').append(t.toString()).append('\n');
         }
         res.append('}');
         return res.toString();
@@ -113,4 +116,11 @@ public class Query {
         return triplets;
     }
 
+    public void setResults(TreeSet<Integer> res) {
+        results = res;
+    }
+
+    public TreeSet<Integer> getResults(){
+        return results;
+    }
 }
