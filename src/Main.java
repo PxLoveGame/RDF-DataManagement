@@ -7,36 +7,25 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Main {
 
-//    private final static Logger LOGGER = Logger.getLogger(Main.class.getName());
-
-    public static Boolean WORKLOAD_TIME = false;
-    public static Boolean VERBOSE = false;
-    public static Boolean EXPORT_RESULTS = false;
-    public static Boolean EXPORT_STATS = false;
-    public static File OUTPUT_DIRECTORY;
-    public static File QUERIES_FILE;
-    public static File DATA_FILE;
+    private static Boolean WORKLOAD_TIME = false;
+    private static Boolean VERBOSE = false;
+    private static Boolean EXPORT_RESULTS = false;
+    private static Boolean EXPORT_STATS = false;
+    private static File OUTPUT_DIRECTORY;
+    private static File QUERIES_FILE;
+    private static File DATA_FILE;
 
 
     public static void main(String[] args) throws IOException {
 
-        /**
+        /*
          java -jar rdfstar
          -queries "/chemin/vers/requetes" -data "/chemin/vers/donnees" -output "/chemin/vers/dossier/sortie" -verbose -export_results -export_stats -workload_time
          -queries "res/queries/Q_1_likes.queryset" -data "res/dataset/100K.rdfxml" -output "out/parsed" -verbose -export_results -export_stats -workload_time
          */
-
-
-//        LOGGER.setLevel(Level.FINE);
-//        LOGGER.addHandler(new ConsoleHandler());
-//        LOGGER.addHandler(new FileHandler());
 
         readParams(args); // loads and checks the arguments
         StopWatch totalTimer = new StopWatch("Temps total d'execution");
@@ -144,11 +133,6 @@ public class Main {
         } if (DATA_FILE == null){
             throw new IllegalArgumentException("Missing argument : " + "data");
         }
-
-//        if (!VERBOSE ){
-//            LOGGER.setLevel(Level.SEVERE);
-//        }
-
     }
 
     private static void readParams(String[] args) throws IOException {
@@ -179,7 +163,7 @@ public class Main {
         stats.append("Nom;Correspondances;Selectivité(%)" + "\n");
         for(Query q : queries){
             for(Triplet triplet : q.getTriplets()){
-                stats.append(triplet.toString() + ";");
+                stats.append(triplet.toString()).append(";");
                 stats.append(String.valueOf(triplet.getSelectivity()) + ";");
 
                 float selectivity = ((float) triplet.getSelectivity() / dico.getDico().size()) * 100 ;
@@ -187,7 +171,6 @@ public class Main {
             }
         }
 
-//        stats.flush();
         stats.close();
     }
 
@@ -203,7 +186,6 @@ public class Main {
             }
             result.append('\n');
         }
-//        result.flush();
         result.close();
     }
 
@@ -220,7 +202,6 @@ public class Main {
             times.append("\n");
 
         }
-//        times.flush();
         times.close();
 
     }
