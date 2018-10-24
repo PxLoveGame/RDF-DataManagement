@@ -25,7 +25,7 @@ public class Dictionary {
                 this.dicoReverse.put(v, cptID);
 
             }catch(Exception e) {
-                System.out.println(e);
+                e.printStackTrace();
             }
             return cptID;
         } else {

@@ -187,7 +187,6 @@ public class Main {
             }
         }
 
-//        stats.flush();
         stats.close();
     }
 
@@ -203,7 +202,6 @@ public class Main {
             }
             result.append('\n');
         }
-//        result.flush();
         result.close();
     }
 
@@ -220,7 +218,6 @@ public class Main {
             times.append("\n");
 
         }
-//        times.flush();
         times.close();
 
     }

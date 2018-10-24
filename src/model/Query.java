@@ -15,12 +15,12 @@ import java.util.stream.Stream;
 
 public class Query {
 
-//    private final String S;
+
     private ArrayList<String> variables = new ArrayList<>();
     private ArrayList<Triplet> triplets = new ArrayList<>();
     private TreeSet<Integer> results = new TreeSet<>();
 
-    public Query(String... vars) {
+    private Query(String... vars) {
         variables.addAll(Arrays.asList(vars));
     }
 
@@ -75,7 +75,7 @@ public class Query {
         String source = readFile(inputFile);
 
         Pattern fullQueryPattern = Pattern.compile("SELECT (\\S+) WHERE \\{((?:\\n\\s\\1 \\S+ \\S+ \\.)+)? ?\\n?}");
-//        Pattern fullQueryPattern = Pattern.compile("SELECT (\\S+) WHERE \\{((?:\\n\\s\\1 \\S+ \\S+ \\.)+)\n?}");
+
         Matcher fullQueryMatcher = fullQueryPattern.matcher(source);
 
         Pattern subQueryPattern = Pattern.compile("\\s(\\S+) <(\\S+)> <(\\S+)> \\.");
@@ -104,7 +104,7 @@ public class Query {
         return queries;
     }
 
-    public static String readFile(File inputFile) throws IOException {
+    private static String readFile(File inputFile) throws IOException {
         StringBuilder sb = new StringBuilder();
         Stream<String> stream =
                 Files.lines( Paths.get(inputFile.toURI()), StandardCharsets.UTF_8);
