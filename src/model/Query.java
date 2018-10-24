@@ -25,24 +25,17 @@ public class Query {
         Integer sId, oId, pId;
 
 
-        int i = 0;
         for (Query q : queries){
-            System.err.println("Reading query " + i);
             for (Triplet t : q.triplets){
-                sId = dicoReverse.get(t.s);
+
                 pId = dicoReverse.get(t.p);
                 oId = dicoReverse.get(t.o);
 
-                if (sId == null || pId == null || oId == null){
+                if (pId == null || oId == null){
                     String errMessage = "Le triplet " + t + " fait mention d'éléments non recensés dans le dictionnaire";
-                    System.err.println("sId : " + sId);
-                    System.err.println("pId : " + pId);
-                    System.err.println("oId : " + oId);
-//                    throw new NullPointerException(errMessage);
-                    System.err.println(errMessage);
-                    // todo : serr && remove query
+                    throw new NullPointerException(errMessage);
                 } else {
-                    t.bindIndex(sId, pId, oId);
+                    t.bindIndex(pId, oId);
                 }
 
             }
@@ -73,7 +66,7 @@ public class Query {
         Pattern fullQueryPattern = Pattern.compile("SELECT (\\S+) WHERE \\{((?:\\n\\s\\1 \\S+ \\S+ \\.)+)\n?}");
         Matcher fullQueryMatcher = fullQueryPattern.matcher(source);
 
-        Pattern subQueryPattern = Pattern.compile("\\s(\\S+) (\\S+) (\\S+) \\.");
+        Pattern subQueryPattern = Pattern.compile("\\s(\\S+) <(\\S+)> <(\\S+)> \\.");
         Matcher subQueryMatcher;
 
         String subQueries, s, p, o;
@@ -142,17 +135,17 @@ public class Query {
             return sId;
         }
 
-        public void bindIndex(Integer s, Integer p, Integer o){
-            sId = s;
+        public void bindIndex(/*Integer s, */Integer p, Integer o){
+//            sId = s;
             oId = o;
             pId = p;
         }
 
         public String toString(){
             if (sId != null && pId != null && oId != null){
-                return s + "(" + sId + ") " + p + "(" +  pId +") " + o + "(" + oId + ")";
+                return new StringBuilder().append(s).append("(").append(sId).append(") ").append(p).append("(").append(pId).append(") ").append(o).append("(").append(oId).append(")").toString();
             }else {
-                return s + " " + p + " " + o;
+                return new StringBuilder().append(s).append(" ").append(p).append(" ").append(o).toString();
             }
 
         }

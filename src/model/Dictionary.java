@@ -19,8 +19,14 @@ public class Dictionary {
     public int addToDicos(String v){
         cptID++;
         try{
+//            System.out.println("Putting " + cptID + " => " + v + " into dico");
+//            System.out.println("Putting " + v + " => " + cptID + " into dicoreverse");
             this.dico.put(cptID,v);
             this.dicoReverse.put(v, cptID);
+//            System.out.println(dicoReverse.keySet());
+//            System.out.println("------------------------------------------");
+
+
         }catch(Exception e) {
             System.out.println(e);
         }
