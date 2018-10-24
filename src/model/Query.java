@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,11 +14,12 @@ import java.util.stream.Stream;
 
 public class Query {
 
-    private final String S;
+//    private final String S;
+    private ArrayList<String> variables = new ArrayList<>();
     private ArrayList<Triplet> triplets = new ArrayList<>();
 
-    public Query(String s) {
-        S = s;
+    public Query(String... vars) {
+        variables.addAll(Arrays.asList(vars));
     }
 
     public static void bindData(ArrayList<Query> queries, Dictionary dico) {
@@ -33,6 +35,8 @@ public class Query {
 
                 if (pId == null || oId == null){
                     String errMessage = "Le triplet " + t + " fait mention d'éléments non recensés dans le dictionnaire";
+                    if (pId == null) errMessage += " : pId";
+                    if (oId == null) errMessage += " : oId";
                     throw new NullPointerException(errMessage);
                 } else {
                     t.bindIndex(pId, oId);
@@ -50,7 +54,11 @@ public class Query {
 
     public String toString(){
         StringBuilder res = new StringBuilder();
-        res.append("Matching ").append(S).append(" on {\n");
+        res.append("Matching ");
+        for (String v : variables){
+            res.append(v).append(' ');
+        }
+        res.append(" on {\n");
         for (Triplet t : triplets){
             res.append('\t').append(t.toString());
         }
@@ -63,7 +71,8 @@ public class Query {
 
         String source = readFile(inputFile);
 
-        Pattern fullQueryPattern = Pattern.compile("SELECT (\\S+) WHERE \\{((?:\\n\\s\\1 \\S+ \\S+ \\.)+)\n?}");
+        Pattern fullQueryPattern = Pattern.compile("SELECT (\\S+) WHERE \\{((?:\\n\\s\\1 \\S+ \\S+ \\.)+)? ?\\n?}");
+//        Pattern fullQueryPattern = Pattern.compile("SELECT (\\S+) WHERE \\{((?:\\n\\s\\1 \\S+ \\S+ \\.)+)\n?}");
         Matcher fullQueryMatcher = fullQueryPattern.matcher(source);
 
         Pattern subQueryPattern = Pattern.compile("\\s(\\S+) <(\\S+)> <(\\S+)> \\.");
@@ -98,6 +107,10 @@ public class Query {
                 Files.lines( Paths.get(inputFile.toURI()), StandardCharsets.UTF_8);
         stream.forEach(s -> sb.append(s).append("\n"));
         return sb.toString();
+    }
+
+    public ArrayList<Triplet> getTriplets() {
+        return triplets;
     }
 
     static class Triplet {
@@ -142,7 +155,7 @@ public class Query {
         }
 
         public String toString(){
-            if (sId != null && pId != null && oId != null){
+            if (pId != null && oId != null){
                 return new StringBuilder().append(s).append("(").append(sId).append(") ").append(p).append("(").append(pId).append(") ").append(o).append("(").append(oId).append(")").toString();
             }else {
                 return new StringBuilder().append(s).append(" ").append(p).append(" ").append(o).toString();

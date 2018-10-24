@@ -1,6 +1,7 @@
 import model.Dictionary;
 import model.Index;
 import model.Query;
+import model.Solver;
 import parsing.RDFRawParser;
 
 import java.io.File;
@@ -63,6 +64,13 @@ public class Main {
         Index index = RDFRawParser.getIndex();
 
         Query.bindData(queries, dico);
+
+        StopWatch solveWatch = new StopWatch();
+        solveWatch.start();
+        Solver.solveQueries(queries, index);
+        solveWatch.stop();
+
+        System.out.println("Queries processed in " + solveWatch);
 
 
 
