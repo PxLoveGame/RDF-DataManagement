@@ -101,11 +101,11 @@ public final class StopWatch {
         }
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public StopWatch(String n){
+    StopWatch(String n){
         name = n;
     }
 }
