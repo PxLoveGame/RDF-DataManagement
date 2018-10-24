@@ -39,16 +39,13 @@ public class Main {
         log("------------------------------------");
 
         StopWatch queriesTimer = new StopWatch("Lecture des requêtes");
+
         queriesTimer.start();
-
-
-
         ArrayList<Query> queries = parseQueries(QUERIES_FILE);
-
         queriesTimer.stop();
         log(queries.size() + " queries found in " + queriesTimer);
 
-        StopWatch dataTimer = new StopWatch("Lecture du jeu de données");
+        StopWatch dataTimer = new StopWatch("Lecture du jeu de données, création du dictionnaire et index");
         dataTimer.start();
         RDFRawParser.parse(DATA_FILE);
         dataTimer.stop();
