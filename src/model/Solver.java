@@ -17,14 +17,18 @@ public class Solver {
 
     private static TreeSet<Integer> solveQuery(Query query, Index index) {
 
+        boolean firstInsert = true;
         TreeSet<Integer> matches = new TreeSet<>();
 
         for (Triplet t : query.getTriplets()){
             TreeSet<Integer> subMatches = solveTriplet(t, index);
 
-            if (matches.isEmpty()){
+            if (firstInsert){
+                firstInsert = false;
                 matches.addAll(subMatches);
-            }else {
+            }else if(matches.isEmpty()){
+                break;
+            } else  {
                 matches.retainAll(subMatches);
             }
         }

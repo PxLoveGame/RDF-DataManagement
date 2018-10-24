@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Main {
@@ -35,10 +36,15 @@ public class Main {
         log("Input data file : " + DATA_FILE.getPath());
         log("Input queries file : " + QUERIES_FILE.getPath());
         log("Output directory: " + OUTPUT_DIRECTORY.getPath());
+        log("------------------------------------");
 
         StopWatch queriesTimer = new StopWatch("Lecture des requêtes");
         queriesTimer.start();
-        ArrayList<Query> queries = Query.parseQueries(QUERIES_FILE);
+
+
+
+        ArrayList<Query> queries = parseQueries(QUERIES_FILE);
+
         queriesTimer.stop();
         log(queries.size() + " queries found in " + queriesTimer);
 
@@ -76,6 +82,26 @@ public class Main {
 
 
 
+    }
+
+    private static ArrayList<Query> parseQueries(File queriesFile) throws IOException {
+        ArrayList<Query> queries = new ArrayList<>();
+
+        ArrayList<File> files = new ArrayList<>();
+
+        if (queriesFile.isDirectory()){
+            files.addAll(Arrays.asList(queriesFile.listFiles()));
+        }else {
+            files.add(queriesFile);
+        }
+
+
+        for (File file : files){
+            log("Lecture du fichier " + file.getCanonicalPath());
+            queries.addAll(Query.parseQueries(file));
+        }
+
+        return queries;
     }
 
     /**
@@ -177,12 +203,11 @@ public class Main {
     private static void exportResults(ArrayList<Query> queries, Dictionary dico) throws IOException {
 
         FileWriter result = new FileWriter(OUTPUT_DIRECTORY.getPath() + "/" + "result.csv");
-        result.append("Request;Results" + "\n");
 
         for(Query q : queries){
-            result.append(q.toString()).append(';');
+            result.append(q.toString()).append(';').append('\n');
             for ( Integer resId : q.getResults() ){
-                result.append( dico.getDico().get(resId) ).append(';');
+                result.append( dico.getDico().get(resId) ).append(';').append('\n');
             }
             result.append('\n');
         }
@@ -195,7 +220,6 @@ public class Main {
         times.append("Tâche;Durée" + "\n");
 
         for (StopWatch timer : timers){
-            System.out.println("timer " + timer.getName());
             times.append(timer.getName());
             times.append(";");
             times.append(timer.toString());
