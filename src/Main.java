@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class Main {
 
-    private final static Logger LOGGER = Logger.getLogger(Main.class.getName());
+//    private final static Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     public static Boolean WORKLOAD_TIME = false;
     public static Boolean VERBOSE = false;
@@ -34,9 +34,9 @@ public class Main {
          */
 
 
-        LOGGER.setLevel(Level.FINE);
-        LOGGER.addHandler(new ConsoleHandler());
-        LOGGER.addHandler(new FileHandler());
+//        LOGGER.setLevel(Level.FINE);
+//        LOGGER.addHandler(new ConsoleHandler());
+//        LOGGER.addHandler(new FileHandler());
 
         readParams(args); // loads and checks the arguments
         StopWatch totalTimer = new StopWatch("Temps total d'execution");
@@ -145,9 +145,9 @@ public class Main {
             throw new IllegalArgumentException("Missing argument : " + "data");
         }
 
-        if (!VERBOSE ){
-            LOGGER.setLevel(Level.SEVERE);
-        }
+//        if (!VERBOSE ){
+//            LOGGER.setLevel(Level.SEVERE);
+//        }
 
     }
 
@@ -186,6 +186,9 @@ public class Main {
                 stats.append(String.valueOf(selectivity) + "\n");
             }
         }
+
+//        stats.flush();
+        stats.close();
     }
 
     private static void exportResults(ArrayList<Query> queries, Dictionary dico) throws IOException {
@@ -200,17 +203,25 @@ public class Main {
             }
             result.append('\n');
         }
+//        result.flush();
+        result.close();
     }
 
     private static void exportWorkloadTime(StopWatch... timers) throws IOException {
-        FileWriter result = new FileWriter(OUTPUT_DIRECTORY.getPath() + "/" + "workload_time.csv");
+        FileWriter times = new FileWriter(OUTPUT_DIRECTORY.getPath() + "/" + "workload_time.csv");
 
-        result.append("Tâche;Durée" + "\n");
+        times.append("Tâche;Durée" + "\n");
 
-//        for (StopWatch timer : timers){
-//            System.out.println("timer " + timer.getName());
-//            result.append(timer.getName()).append(';').append(timer.toString()).append('\n');
-//        }
+        for (StopWatch timer : timers){
+            System.out.println("timer " + timer.getName());
+            times.append(timer.getName());
+            times.append(";");
+            times.append(timer.toString());
+            times.append("\n");
+
+        }
+//        times.flush();
+        times.close();
 
     }
     
