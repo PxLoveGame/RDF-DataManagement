@@ -39,7 +39,6 @@ public class Solver {
 
     private static TreeSet<Integer> solveTriplet(Triplet triplet, Index index) {
         TreeMap<Integer, TreeSet<Integer>> os = index.getPos().get(triplet.pId());
-
         TreeSet<Integer> s = os.get(triplet.oId());
 
         if (s == null){
