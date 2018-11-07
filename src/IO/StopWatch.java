@@ -1,3 +1,5 @@
+package IO;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -60,7 +62,7 @@ public final class StopWatch {
 
      <P>Ref: https://blogs.oracle.com/dholmes/entry/inside_the_hotspot_vm_clocks
 
-     @throws IllegalStateException if the StopWatch has never been used,
+     @throws IllegalStateException if the IO.StopWatch has never been used,
      or if the stopwatch is still running.
      */
     @Override public String toString() {
@@ -77,7 +79,7 @@ public final class StopWatch {
     /**
      Express the "reading" on the stopwatch as a numeric type, in nanoseconds.
 
-     @throws IllegalStateException if the StopWatch has never been used,
+     @throws IllegalStateException if the IO.StopWatch has never been used,
      or if the stopwatch is still running.
      */
     private long toValue() {

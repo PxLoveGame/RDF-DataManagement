@@ -32,6 +32,13 @@ public final class RDFRawParser {
 
 	public static void parse(File dataFile) throws  FileNotFoundException {
 
+	    if (dataFile.isDirectory()){
+	        for (File subFile : dataFile.listFiles()){
+	            parse(subFile);
+            }
+            return;
+        }
+
         Reader reader = new FileReader(dataFile);
 
         org.openrdf.rio.RDFParser rdfParser = Rio

@@ -16,9 +16,14 @@ public class Solver {
     }
 
     private static TreeSet<Integer> solveQuery(Query query, Index index) {
+        TreeSet<Integer> matches = new TreeSet<>();
+
+        if (query.isNotBound()){
+            return matches;
+        }
+
 
         boolean firstInsert = true;
-        TreeSet<Integer> matches = new TreeSet<>();
 
         for (Triplet t : query.getTriplets()){
             TreeSet<Integer> subMatches = solveTriplet(t, index);

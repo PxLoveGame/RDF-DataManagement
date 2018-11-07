@@ -1,3 +1,5 @@
+package IO;
+
 import model.*;
 import parsing.RDFRawParser;
 
@@ -8,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+
+import static IO.Logger.log;
 
 public class Main {
 
@@ -21,6 +25,10 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
+
+        if (args.length == 0){
+            printUsage();
+        }
 
         /*
          java -jar rdfstar
@@ -60,7 +68,7 @@ public class Main {
         Solver.solveQueries(queries, index);
         solveTimer.stop();
 
-        log("Queries processed in " + solveTimer);
+        log(queries.size() + " queries processed in " + solveTimer);
 
         totalTimer.stop();
 
@@ -80,6 +88,12 @@ public class Main {
 
     }
 
+    private static void printUsage() {
+        System.out.println("Usage example: ");
+        System.out.println("java -jar rdfstar");
+        System.out.println("\t -queries \"res/queries\" -data \"res/dataset\" -output \"out\" -verbose -export_results -export_stats -workload_time");
+    }
+
     private static ArrayList<Query> parseQueries(File queriesFile) throws IOException {
         ArrayList<Query> queries = new ArrayList<>();
 
@@ -93,8 +107,17 @@ public class Main {
 
 
         for (File file : files){
-            log("Lecture du fichier " + file.getCanonicalPath());
-            queries.addAll(Query.parseQueries(file));
+
+            if( file.isFile() ){
+                log("Lecture du fichier " + file.getCanonicalPath());
+                queries.addAll(Query.parseQueries(file));
+            }else {
+                log("Ouverture du sous-dossier " + file.getCanonicalPath());
+                for (File subFile : file.listFiles()){
+                    queries.addAll(parseQueries(subFile));
+                }
+            }
+
         }
 
         return queries;
@@ -134,7 +157,8 @@ public class Main {
                     OUTPUT_DIRECTORY = new File(params.get(key));
                     break;
                 case "verbose":
-                    VERBOSE = Boolean.valueOf(params.get(key));
+//                    VERBOSE = Boolean.valueOf(params.get(key));
+                    Logger.setLogging( Boolean.valueOf(params.get(key)) );
                     break;
                 case "export_results":
                     EXPORT_RESULTS = Boolean.valueOf(params.get(key));
@@ -185,11 +209,10 @@ public class Main {
 
     private static void exportStats(ArrayList<Query> queries, Dictionary dico) throws IOException {
         FileWriter stats = new FileWriter(OUTPUT_DIRECTORY.getPath() + "/" + "stats.csv");
-        stats.append("Nom;Correspondances;Selectivité(%)" + "\n");
+        stats.append("Nom;Correspondances;Selectivite(%)" + "\n");
         for(Query q : queries){
             for(Triplet triplet : q.getTriplets()){
-                stats.append(triplet.toString()).append(";");
-                stats.append(String.valueOf(triplet.getSelectivity()) + ";");
+                stats.append(triplet.toString()).append(";").append(String.valueOf(triplet.getSelectivity())).append(";");
 
                 float selectivity = ((float) triplet.getSelectivity() / dico.getDico().size()) * 100 ;
                 stats.append(String.valueOf(selectivity) + "\n");
@@ -229,10 +252,6 @@ public class Main {
 
     }
     
-    private static void log(String msg){
-        if (VERBOSE){
-            System.out.println(msg);
-        }
-    }
+
 
 }

@@ -1,5 +1,7 @@
 package model;
 
+import IO.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -13,12 +15,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+
 public class Query {
 
 
     private ArrayList<String> variables = new ArrayList<>();
     private ArrayList<Triplet> triplets = new ArrayList<>();
     private TreeSet<Integer> results = new TreeSet<>();
+    private boolean notBound = false;
 
     private Query(String... vars) {
         variables.addAll(Arrays.asList(vars));
@@ -26,7 +30,9 @@ public class Query {
 
     public static void bindData(ArrayList<Query> queries, Dictionary dico) {
         Map<String, Integer> dicoReverse = dico.getDicoReverse();
-        Integer sId, oId, pId;
+        Integer oId, pId;
+
+//        ArrayList<Query> missingBindings = new ArrayList<>();
 
 
         for (Query q : queries){
@@ -36,18 +42,28 @@ public class Query {
                 oId = dicoReverse.get(t.o());
 
                 if (pId == null || oId == null){
-                    String errMessage = "Le triplet " + t + " fait mention d'éléments non recensés dans le dictionnaire";
-                    if (pId == null) errMessage += " : pId";
-                    if (oId == null) errMessage += " : oId";
-                    throw new NullPointerException(errMessage);
+                    if (Logger.logEnabled()){
+                        String errMessage = "\n\tLe triplet \"" + t + "\" fait mention d'éléments non recensés dans le dictionnaire : ";
+                        if (pId == null) errMessage += "\n\t\tpId <" + t.p() + ">";
+                        if (oId == null) errMessage += "\n\t\toId <" + t.o() + ">";
+                        Logger.logError("Erreur de correspondance de la requête dans l'index : " + errMessage);
+                    }
+
+                    q.flagNotBound();
+                    break;
+
                 } else {
                     t.bindIndex(pId, oId);
                 }
 
             }
 
-        }
+       }
 
+    }
+
+    private void flagNotBound() {
+        notBound = true;
     }
 
     private void addTriplet(Triplet triplet) {
@@ -74,11 +90,11 @@ public class Query {
 
         String source = readFile(inputFile);
 
-        Pattern fullQueryPattern = Pattern.compile("SELECT (\\S+) WHERE \\{((?:\\n\\s\\1 \\S+ \\S+ \\.)+)? ?\\n?}");
+        Pattern fullQueryPattern = Pattern.compile("SELECT (\\S+) WHERE \\{((?:\\n\\t?\\s\\1 \\S+ \\S+ ?> ?\\.?)+)? ?\\.?\\n*}");
 
         Matcher fullQueryMatcher = fullQueryPattern.matcher(source);
 
-        Pattern subQueryPattern = Pattern.compile("\\s(\\S+) <(\\S+)> <(\\S+)> \\.");
+        Pattern subQueryPattern = Pattern.compile("\\s(\\S+) <(\\S+)> <(\\S+)> ?\\.?");
         Matcher subQueryMatcher;
 
         String subQueries, s, p, o;
@@ -98,6 +114,7 @@ public class Query {
                 query.addTriplet(triplet);
             }
 
+
             queries.add(query);
         }
 
@@ -116,11 +133,15 @@ public class Query {
         return triplets;
     }
 
-    public void setResults(TreeSet<Integer> res) {
+    void setResults(TreeSet<Integer> res) {
         results = res;
     }
 
     public TreeSet<Integer> getResults(){
         return results;
+    }
+
+    boolean isNotBound() {
+        return notBound;
     }
 }
