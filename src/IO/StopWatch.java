@@ -16,8 +16,11 @@ public final class StopWatch {
 
 
     // PRIVATE
+    private final TimeStrategy timeStrategy;
     private long start;
     private long stop;
+    private long startMillis;
+    private long stopMillis;
 
     private boolean isRunning;
     private boolean hasBeenUsedOnce;
@@ -37,6 +40,8 @@ public final class StopWatch {
         //reset both start and stop
         start = System.nanoTime();
         stop = 0;
+        startMillis = System.currentTimeMillis();
+        stopMillis = 0;
         isRunning = true;
         hasBeenUsedOnce = true;
     }
@@ -50,6 +55,7 @@ public final class StopWatch {
             throw new IllegalStateException("Cannot stop if not currently running.");
         }
         stop = System.nanoTime();
+        stopMillis = System.currentTimeMillis();
         isRunning = false;
     }
 
@@ -68,10 +74,18 @@ public final class StopWatch {
     @Override public String toString() {
         validateIsReadable();
         StringBuilder result = new StringBuilder();
-        BigDecimal value = new BigDecimal(toValue());//scale is zero
-        //millis, with 3 decimals:
-        value = value.divide(MILLION, 3, RoundingMode.HALF_EVEN);
-        result.append(value);
+
+        switch (timeStrategy){
+            case NANOS:
+                BigDecimal value = new BigDecimal(toValue());//scale is zero
+                //millis, with 3 decimals:
+                value = value.divide(MILLION, 3, RoundingMode.HALF_EVEN);
+                result.append(value);
+                break;
+            case MILLIS:
+                result.append(stopMillis - startMillis);
+                break;
+        }
         result.append(" ms");
         return result.toString();
     }
@@ -107,7 +121,16 @@ public final class StopWatch {
         return name;
     }
 
-    StopWatch(String n){
+    StopWatch(String n, TimeStrategy ts){
         name = n;
+        timeStrategy = ts;
+    }
+
+    StopWatch(String n){
+        this(n, TimeStrategy.MILLIS);
+    }
+
+    enum TimeStrategy{
+        MILLIS, NANOS
     }
 }
