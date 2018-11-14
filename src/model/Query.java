@@ -99,13 +99,17 @@ public class Query {
 
         String subQueries, s, p, o;
 
+        int matches = 0, subMatches = 0;
+
         while (fullQueryMatcher.find()){
+            matches++;
             s = fullQueryMatcher.group(1); // ?v0
             subQueries = fullQueryMatcher.group(2); // ?v0 <...> <...> .\n X fois
             subQueryMatcher = subQueryPattern.matcher(subQueries);
             Query query = new Query(s);
 
             while (subQueryMatcher.find()){
+                subMatches++;
                 s = subQueryMatcher.group(1);
                 p = subQueryMatcher.group(2);
                 o = subQueryMatcher.group(3);
