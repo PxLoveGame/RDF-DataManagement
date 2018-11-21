@@ -71,6 +71,15 @@ public class Jena_Main {
             Main.exportResults(queries, dico);
         }
 
+        if(completeness != 0){
+            float completeness_percent = (completeness * 100)/ queries.size();
+        }
+        if(soundness != 0){
+            float soundness_percent = (soundness * 100) / queries.size();
+        }
+
+
+
     }
 
     private static int jenaExecution(ArrayList<Query> queries, Dictionary dico){
@@ -103,22 +112,33 @@ public class Jena_Main {
     }
 
     private static void compareJenaResults(List<String> solutions, Query q, Dictionary dico) {
+        boolean safe = true;
+
         for ( int resultId : q.getResults()){
             String resultStr = dico.getDico().get(resultId);
             if( !solutions.contains(resultStr) ){
                 // on a une solution que Jena n'a pas
-                soundness++;
+                safe = false;
 
             }
-
         }
+
+        if(safe){
+            soundness++;
+        }
+
+        safe = true;
 
         for (String solution : solutions){
             Integer resId = dico.getDicoReverse().get(solution);
             if (resId == null){
                 // Jena a une solution qu'on n'a pas
-                completeness++;
+                safe = false;
             }
+        }
+
+        if(safe){
+            completeness++;
         }
 
 
