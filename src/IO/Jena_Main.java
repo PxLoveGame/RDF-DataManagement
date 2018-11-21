@@ -86,12 +86,14 @@ public class Jena_Main {
         else{
             soundness_percent = 0;
         }
+        System.out.println("Soundness % : " + soundness_percent);
+        System.out.println("Completeness % : " + completeness_percent);
 
 
 
     }
 
-    private static int jenaExecution(ArrayList<Query> queries, Dictionary dico){
+    private static void jenaExecution(ArrayList<Query> queries, Dictionary dico){
 
         Model model = ModelFactory.createDefaultModel();
         InputStream in = FileManager.get().open(DATA_FILE.getPath());
@@ -117,7 +119,7 @@ public class Jena_Main {
 
 
         }
-        return 0;
+
     }
 
     private static void compareJenaResults(List<String> solutions, Query q, Dictionary dico) {
