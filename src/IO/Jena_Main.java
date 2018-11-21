@@ -1,15 +1,19 @@
 package IO;
 
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.util.FileManager;
 import model.*;
+import model.Query;
 import parsing.RDFRawParser;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import static IO.Logger.log;
 
@@ -58,20 +62,77 @@ public class Jena_Main {
 
         Solver.solveQueries(queries, index);
 
+        jenaExecution(queries, dico);
+
         if(EXPORT_STATS){
             exportStats(queries,dico);
         }
         if(EXPORT_RESULTS) {
-            exportResults(queries, dico);
+            Main.exportResults(queries, dico);
         }
 
     }
 
-    private static int jenaExecution(ArrayList<Query> queries){
+    private static int jenaExecution(ArrayList<Query> queries, Dictionary dico){
+
+        Model model = ModelFactory.createDefaultModel();
+        InputStream in = FileManager.get().open(DATA_FILE.getPath());
+        model.read(in, null);
+
 
         for (Query q : queries){
+            String source = q.getSource();
+
+            ResultSet resultSet = runJenaQuery( source, model );
+
+            List<String> solutions = new ArrayList<>();
+
+
+
+            while (resultSet.hasNext()){
+                QuerySolution solution = resultSet.next();
+                RDFNode soluces = solution.get("?v0");
+                solutions.add(soluces.toString());
+            }
+
+            compareJenaResults(solutions, q, dico);
+
 
         }
+        return 0;
+    }
+
+    private static void compareJenaResults(List<String> solutions, Query q, Dictionary dico) {
+        for ( int resultId : q.getResults()){
+            String resultStr = dico.getDico().get(resultId);
+            if( !solutions.contains(resultStr) ){
+                // on a une solution que Jena n'a pas
+                soundness++;
+
+            }
+
+        }
+
+        for (String solution : solutions){
+            Integer resId = dico.getDicoReverse().get(solution);
+            if (resId == null){
+                // Jena a une solution qu'on n'a pas
+                completeness++;
+            }
+        }
+
+
+
+
+    }
+
+    private static com.hp.hpl.jena.query.ResultSet runJenaQuery(String source, Model model) {
+        com.hp.hpl.jena.query.Query query = QueryFactory.create(source);
+        QueryExecution queryExecution = QueryExecutionFactory.create(query, model);
+        com.hp.hpl.jena.query.ResultSet resultSet = queryExecution.execSelect();
+//        ResultSetFormatter.out(System.out, resultSet, query);
+
+        return resultSet;
     }
 
     private static void printUsage() {
@@ -206,36 +267,6 @@ public class Jena_Main {
         }
 
         stats.close();
-    }
-
-    private static void exportResults(ArrayList<Query> queries, Dictionary dico) throws IOException {
-
-        FileWriter result = new FileWriter(OUTPUT_DIRECTORY.getPath() + "/" + "result.csv");
-
-        for(Query q : queries){
-            result.append(q.toString()).append(';').append('\n');
-            for ( Integer resId : q.getResults() ){
-                result.append( dico.getDico().get(resId) ).append(';').append('\n');
-            }
-            result.append('\n');
-        }
-        result.close();
-    }
-
-    private static void exportWorkloadTime(StopWatch... timers) throws IOException {
-        FileWriter times = new FileWriter(OUTPUT_DIRECTORY.getPath() + "/" + "workload_time.csv");
-
-        times.append("Tâche;Durée" + "\n");
-
-        for (StopWatch timer : timers){
-            times.append(timer.getName());
-            times.append(";");
-            times.append(timer.toString());
-            times.append("\n");
-
-        }
-        times.close();
-
     }
 
 

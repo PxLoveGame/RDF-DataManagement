@@ -222,7 +222,7 @@ public class Main {
         stats.close();
     }
 
-    private static void exportResults(ArrayList<Query> queries, Dictionary dico) throws IOException {
+    public static void exportResults(ArrayList<Query> queries, Dictionary dico) throws IOException {
 
         FileWriter result = new FileWriter(OUTPUT_DIRECTORY.getPath() + "/" + "result.csv");
 

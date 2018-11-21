@@ -23,6 +23,7 @@ public class Query {
     private ArrayList<Triplet> triplets = new ArrayList<>();
     private TreeSet<Integer> results = new TreeSet<>();
     private boolean notBound = false;
+    private String source = null;
 
     private Query(String... vars) {
         variables.addAll(Arrays.asList(vars));
@@ -119,10 +120,15 @@ public class Query {
             }
 
 
+            query.setSource( fullQueryMatcher.group(0) );
             queries.add(query);
         }
 
         return queries;
+    }
+
+    private void setSource(String s) {
+        source = s;
     }
 
     private static String readFile(File inputFile) throws IOException {
@@ -147,5 +153,9 @@ public class Query {
 
     boolean isNotBound() {
         return notBound;
+    }
+
+    public String getSource() {
+        return source;
     }
 }

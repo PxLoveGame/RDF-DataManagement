@@ -4,7 +4,9 @@
       <root url="file://$PROJECT_DIR$/Jena_lib" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ideaLibSources/jena-arq-2.11.0-sources.jar!/" />
+    </SOURCES>
     <jarDirectory url="file://$PROJECT_DIR$/Jena_lib" recursive="false" />
   </library>
 </component>
