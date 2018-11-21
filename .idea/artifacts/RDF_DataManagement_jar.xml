@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RDF-DataManagement:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RDF_DataManagement_jar</output-path>
+    <root id="archive" name="RDF-DataManagement.jar">
+      <element id="module-output" name="RDF-DataManagement" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/commons-io-2.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/sesame-model-2.7.11.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/sesame-queryalgebra-evaluation-2.7.11.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/sesame-rio-api-2.7.11.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/sesame-rio-extensions-api-0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/sesame-rio-rdfxml-2.7.11.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/sesame-util-2.7.11.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/slf4j-api-1.7.25.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/slf4j-simple-1.7.25.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
