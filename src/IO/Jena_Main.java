@@ -71,11 +71,20 @@ public class Jena_Main {
             Main.exportResults(queries, dico);
         }
 
+        float completeness_percent;
         if(completeness != 0){
-            float completeness_percent = (completeness * 100)/ queries.size();
+            completeness_percent = (completeness * 100)/ queries.size();
         }
+        else{
+            completeness_percent = 0;
+        }
+
+        float soundness_percent;
         if(soundness != 0){
-            float soundness_percent = (soundness * 100) / queries.size();
+            soundness_percent = (soundness * 100) / queries.size();
+        }
+        else{
+            soundness_percent = 0;
         }
 
 
